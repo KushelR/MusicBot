@@ -35,6 +35,7 @@ from .config import Config, ConfigDefaults
 from .permissions import Permissions, PermissionsDefaults
 from .aliases import Aliases, AliasesDefault
 from .constructs import SkipState, Response
+from .secret import set_secrets
 from .utils import (
     load_file,
     write_file,
@@ -86,7 +87,8 @@ class MusicBot(discord.Client):
         self.cached_app_info = None
         self.last_status = None
 
-        self.config = Config(config_file)
+        config = set_secrets(config_file)
+        self.config = Config(config_file, config)
 
         self._setup_logging()
 

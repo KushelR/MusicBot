@@ -407,7 +407,8 @@ def main():
         m = None
         try:
             from musicbot import MusicBot
-
+            from dotenv import load_dotenv
+            load_dotenv()
             m = MusicBot()
 
             sh.terminator = ""
