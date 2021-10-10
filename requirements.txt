@@ -2,6 +2,8 @@ pynacl
 discord.py[voice]
 pip
 youtube_dl
-colorlog
+colorlog~=6.5.0
 cffi --only-binary all; sys_platform == 'win32'
 python-dotenv
+aiohttp~=3.7.4.post0
+discord~=1.7.3
