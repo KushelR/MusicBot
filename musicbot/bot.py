@@ -36,7 +36,7 @@ from .config import Config, ConfigDefaults
 from .permissions import Permissions, PermissionsDefaults
 from .aliases import Aliases, AliasesDefault
 from .constructs import SkipState, Response
-from .secret import set_secrets
+from .set_variables import set_config, set_permissions
 from .utils import (
     load_file,
     write_file,
@@ -87,12 +87,13 @@ class MusicBot(discord.Client):
         self.cached_app_info = None
         self.last_status = None
 
-        config = set_secrets(config_file)
+        config = set_config(config_file)
         self.config = Config(config_file, config)
 
         self._setup_logging()
 
-        self.permissions = Permissions(perms_file, grant_all=[self.config.owner_id])
+        permissions = set_permissions(perms_file)
+        self.permissions = Permissions(perms_file, permissions, grant_all=[self.config.owner_id])
         self.str = Json(self.config.i18n_file)
 
         if self.config.usealias:
