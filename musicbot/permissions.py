@@ -60,11 +60,11 @@ class Permissive:
 
 
 class Permissions:
-    def __init__(self, config_file, grant_all=None):
+    def __init__(self, config_file, permissions, grant_all=None):
         self.config_file = config_file
-        self.config = configparser.ConfigParser(interpolation=None)
+        self.config = permissions
 
-        if not self.config.read(config_file, encoding="utf-8"):
+        if not self.config:
             log.info("Permissions file not found, copying example_permissions.ini")
 
             try:
