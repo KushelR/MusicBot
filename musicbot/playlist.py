@@ -434,6 +434,10 @@ class Playlist(EventEmitter, Serializable):
     def count_for_user(self, user):
         return sum(1 for e in self.entries if e.meta.get("author", None) == user)
 
+    def move_entry(self, entry_index, position_index):
+        entry = self.delete_entry_at_index(entry_index-1)
+        self.entries.insert(position_index-1, entry)
+
     def __json__(self):
         return self._enclose_json({"entries": list(self.entries)})
 
