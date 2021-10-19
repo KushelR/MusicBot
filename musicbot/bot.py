@@ -3816,6 +3816,53 @@ class MusicBot(discord.Client):
                 embed
             )
 
+    async def cmd_move(self, player, channel, track, new_position):
+        """
+        Usage:
+            {command_prefix}lyrics
+
+        Gets lyrics for currently playing .
+        """
+        try:
+            track = int(track)
+        except (TypeError, ValueError):
+            raise exceptions.CommandError(
+                self.str.get(
+                    "cmd-remove-invalid",
+                    "Invalid number. Use {}queue to find queue positions.",
+                ).format(self.config.command_prefix),
+                expire_in=20,
+            )
+
+        try:
+            new_position = int(new_position)
+        except (TypeError, ValueError):
+            raise exceptions.CommandError(
+                self.str.get(
+                    "cmd-remove-invalid",
+                    "Invalid number. Use {}queue to find queue positions.",
+                ).format(self.config.command_prefix),
+                expire_in=20,
+            )
+
+        if track > len(player.playlist.entries) or new_position > len(player.playlist.entries):
+            raise exceptions.CommandError(
+                self.str.get(
+                    "cmd-remove-invalid",
+                    "Invalid number. Use {}queue to find queue positions.",
+                ).format(self.config.command_prefix),
+                expire_in=20,
+            )
+
+        track_name = player.playlist.get_entry_at_index(track-1).title
+        player.playlist.move_entry(track, new_position)
+        return Response(
+            self.str.get("cmd-move-reply", "Moved `{0}` to position `{1}` in queue").format(
+                track_name,new_position
+            ),
+            delete_after=20,
+        )
+
     @dev_only
     async def cmd_breakpoint(self, message):
         log.critical("Activating debug breakpoint")

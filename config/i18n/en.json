@@ -74,6 +74,7 @@
     "cmd-resume-none": "Player is not paused.",
     "cmd-shuffle-reply": "Shuffled `{0}`'s queue.",
     "cmd-clear-reply": "Cleared `{0}`'s queue",
+    "cmd-move-reply": "Moved `{0}` to position `{1}` in queue",
     "cmd-remove-none": "There's nothing to remove!",
     "cmd-remove-reply": "Removed `{0}` added by `{1}`",
     "cmd-remove-missing": "Nothing found in the queue from user `%s`",
