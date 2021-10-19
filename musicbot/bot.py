@@ -3801,7 +3801,7 @@ class MusicBot(discord.Client):
 
             data = await r.json()
 
-            if len(data["lyrics"]) > 2500:
+            if len(data["lyrics"]) > 6000:
                 return await self.safe_send_message(channel, f"<{data['links']['genius']}>")
 
             embed = discord.Embed(
