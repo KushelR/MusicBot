@@ -3801,7 +3801,7 @@ class MusicBot(discord.Client):
             )
         )
 
-    async def cmd_lyrics(self, player, channel, name=None):
+    async def cmd_lyrics(self, player, channel, *, args):
         """
         Usage:
             {command_prefix}lyrics
@@ -3809,7 +3809,7 @@ class MusicBot(discord.Client):
         Gets lyrics for currently playing .
         """
         lyrics_url = os.getenv("LYRICS_URL")
-        name = name or player.current_entry.title
+        name = args or player.current_entry.title
 
         await self.send_typing(channel)
         async with aiohttp.request("GET", lyrics_url + name, headers={}) as r:
