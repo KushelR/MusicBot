@@ -646,6 +646,11 @@ class MusicBot(discord.Client):
                 "last_np_msg"
             ] = await self.safe_send_message(channel, newmsg)
 
+            if player.lyrics_mode:
+                lyrics = await self.lyrics(player, channel, name=None)
+                self.server_specific_data[guild][
+                    "last_np_msg"
+                ] = await self.safe_send_message(channel, lyrics)
         # TODO: Check channel voice state?
 
     async def on_player_resume(self, player, entry, **_):
@@ -1585,6 +1590,20 @@ class MusicBot(discord.Client):
         return Response(
             "\N{OK HAND SIGN} Karaoke mode is now "
             + ["disabled", "enabled"][player.karaoke_mode],
+            delete_after=15,
+        )
+
+    async def cmd_subtitles(self, player, channel, author):
+        """
+        Usage:
+            {command_prefix}subtitles
+
+        Activates lyrics mode. During lyrics mode, all songs playing will auto search for lyrics.
+        """
+        player.lyrics_mode = not player.lyrics_mode
+        return Response(
+            "\N{OK HAND SIGN} Lyrics mode is now "
+            + ["disabled", "enabled"][player.lyrics_mode],
             delete_after=15,
         )
 
@@ -3815,6 +3834,38 @@ class MusicBot(discord.Client):
             return Response(
                 embed
             )
+
+    async def lyrics(self, player, channel, name=None):
+        """
+        Usage:
+            {command_prefix}lyrics
+
+        Gets lyrics for currently playing .
+        """
+        lyrics_url = os.getenv("LYRICS_URL")
+        name = name or player.current_entry.title
+
+        await self.send_typing(channel)
+        async with aiohttp.request("GET", lyrics_url + name, headers={}) as r:
+            if not 200 <= r.status <= 299:
+                raise exceptions.CommandError(
+                    "No lyrics could be found."
+                )
+
+            data = await r.json()
+
+            if len(data["lyrics"]) > 6000:
+                return await self.safe_send_message(channel, f"<{data['links']['genius']}>")
+
+            embed = discord.Embed(
+                title=data["title"],
+                description=data["lyrics"],
+                colour=player.current_entry.meta["author"].colour,
+                timestamp=datetime.datetime.utcnow(),
+            )
+            embed.set_thumbnail(url=data["thumbnail"]["genius"])
+            embed.set_author(name=data["author"])
+            return embed
 
     async def cmd_move(self, player, channel, track, new_position):
         """

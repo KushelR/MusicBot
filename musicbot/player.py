@@ -129,6 +129,7 @@ class MusicPlayer(EventEmitter, Serializable):
         self.state = MusicPlayerState.STOPPED
         self.skip_state = None
         self.karaoke_mode = False
+        self.lyrics_mode = False
 
         self._volume = bot.config.default_volume
         self._play_lock = asyncio.Lock()
